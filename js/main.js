@@ -2,7 +2,8 @@ import { config } from "./config.js";
 
 const body = document.body;
 const film = document.querySelector("#film");
-const video = document.querySelector(".world");
+const canvas = document.querySelector(".world");
+const ctx = canvas.getContext("2d");
 const slabs = [...document.querySelectorAll(".scene .slab")];
 const railItems = [...document.querySelectorAll(".rail-steps li")];
 const railNow = document.querySelector(".rail-now");
@@ -16,10 +17,13 @@ const isTouch = window.matchMedia("(pointer: coarse)").matches;
 
 let segments = [];
 let totalWeight = 0;
-let targetTime = 0;
-let shownTime = 0;
-let videoReady = false;
+let fps = 24;
+let targetFrame = 0;
+let shownFrame = 0;
+let drawnFrame = -1;
+let frames = [];
 let lastWidth = window.innerWidth;
+let lastTime = performance.now();
 
 setupContactLinks();
 setupForm();
@@ -32,33 +36,64 @@ if (reduceMotion) {
 
 async function start() {
   try {
-    const response = await fetch(config.manifest);
-    const manifest = await response.json();
+    const manifest = await fetch(config.manifest).then((r) => r.json());
+    fps = manifest.fps;
     buildSegments(manifest);
     setFilmHeight();
+    sizeCanvas();
     update();
     window.addEventListener("scroll", update, { passive: true });
     window.addEventListener("resize", onResize);
-    window.addEventListener("touchstart", primeVideo, { once: true, passive: true });
     railItems.forEach((item, i) => {
       item.querySelector("button").addEventListener("click", () => goToScene(i));
     });
+
+    const folder = isMobile ? config.framesMobile : config.framesDesktop;
+    const index = await fetch(folder + "/index.json").then((r) => r.json());
+    frames = new Array(index.count).fill(null);
+
+    await loadChunk(folder, index, 0, (p) => showProgress(p));
+    body.classList.add("is-ready");
     requestAnimationFrame(loop);
 
-    let name = config.videoDesktop;
-    if (isMobile) name = config.videoMobile;
-    else if (window.innerWidth * window.devicePixelRatio > 1600) name = config.videoLarge;
-    const url = await loadVideo(pickVideo(name));
-    video.src = url;
-    await waitFor(video, "loadeddata");
-    video.currentTime = targetTime;
-    shownTime = targetTime;
-    videoReady = true;
-    body.classList.add("is-ready");
+    for (let c = 1; c < index.chunks.length; c++) {
+      await loadChunk(folder, index, c, null);
+    }
   } catch (error) {
     console.warn("Falling back to the static version:", error);
     goStatic();
   }
+}
+
+async function loadChunk(folder, index, chunkNumber, onProgress) {
+  const response = await fetch(folder + "/" + index.chunks[chunkNumber]);
+  if (!response.ok) throw new Error("Missing " + index.chunks[chunkNumber]);
+  const total = Number(response.headers.get("content-length")) || 0;
+  const reader = response.body.getReader();
+  const parts = [];
+  let loaded = 0;
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    parts.push(value);
+    loaded += value.length;
+    if (onProgress && total) onProgress(loaded / total);
+  }
+  const blob = new Blob(parts);
+  const jobs = [];
+  index.frames.forEach((entry, i) => {
+    if (entry[0] !== chunkNumber) return;
+    const url = URL.createObjectURL(blob.slice(entry[1], entry[1] + entry[2], "image/webp"));
+    const img = new Image();
+    jobs.push(new Promise((resolve) => {
+      img.onload = () => { frames[i] = img; resolve(); };
+      img.onerror = resolve;
+    }));
+    img.src = url;
+  });
+  await Promise.all(jobs);
+  drawnFrame = -1;
+  if (onProgress) onProgress(1);
 }
 
 function buildSegments(manifest) {
@@ -75,6 +110,13 @@ function buildSegments(manifest) {
 
 function setFilmHeight() {
   film.style.height = (totalWeight + 1) * window.innerHeight + "px";
+}
+
+function sizeCanvas() {
+  const ratio = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = Math.round(canvas.clientWidth * ratio);
+  canvas.height = Math.round(canvas.clientHeight * ratio);
+  drawnFrame = -1;
 }
 
 function getProgress() {
@@ -101,7 +143,7 @@ function update() {
   if (segments.length === 0) return;
   const progress = getProgress();
   const { segment, q, time } = findPosition(progress);
-  targetTime = time;
+  targetFrame = time * fps;
 
   const scenes = segments.filter((s) => s.type === "scene");
   const sceneIndex = scenes.indexOf(segment);
@@ -133,13 +175,36 @@ function smooth(x) {
   return t * t * (3 - 2 * t);
 }
 
-function loop() {
-  shownTime += (targetTime - shownTime) * config.smoothing;
-  if (Math.abs(targetTime - shownTime) < 0.002) shownTime = targetTime;
-  if (videoReady && !video.seeking && Math.abs(video.currentTime - shownTime) > 0.01) {
-    video.currentTime = shownTime;
-  }
+function loop(now) {
+  const dt = Math.min(now - lastTime, 100);
+  lastTime = now;
+  const ease = 1 - Math.pow(1 - config.smoothing, dt / 16.7);
+  shownFrame += (targetFrame - shownFrame) * ease;
+  if (Math.abs(targetFrame - shownFrame) < 0.01) shownFrame = targetFrame;
+  draw(Math.round(shownFrame));
   requestAnimationFrame(loop);
+}
+
+function nearestLoaded(i) {
+  if (frames[i]) return i;
+  for (let d = 1; d < 16; d++) {
+    if (frames[i - d]) return i - d;
+    if (frames[i + d]) return i + d;
+  }
+  return -1;
+}
+
+function draw(i) {
+  const index = Math.min(Math.max(i, 0), frames.length - 1);
+  const found = nearestLoaded(index);
+  if (found < 0 || found === drawnFrame) return;
+  const img = frames[found];
+  const scale = Math.max(canvas.width / img.naturalWidth, canvas.height / img.naturalHeight);
+  const w = img.naturalWidth * scale;
+  const h = img.naturalHeight * scale;
+  ctx.drawImage(img, (canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
+  drawnFrame = found;
+  canvas.dataset.frame = found;
 }
 
 function goToScene(index) {
@@ -154,31 +219,8 @@ function onResize() {
   if (isTouch && window.innerWidth === lastWidth) return;
   lastWidth = window.innerWidth;
   setFilmHeight();
+  sizeCanvas();
   update();
-}
-
-function pickVideo(name) {
-  if (video.canPlayType('video/mp4; codecs="avc1.640028"')) return name + ".mp4";
-  return name + ".webm";
-}
-
-async function loadVideo(src) {
-  const response = await fetch(src);
-  if (!response.ok) throw new Error("Video not found: " + src);
-  const total = Number(response.headers.get("content-length")) || 0;
-  const reader = response.body.getReader();
-  const chunks = [];
-  let loaded = 0;
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    chunks.push(value);
-    loaded += value.length;
-    if (total) showProgress(loaded / total);
-  }
-  showProgress(1);
-  const type = src.endsWith(".webm") ? "video/webm" : "video/mp4";
-  return URL.createObjectURL(new Blob(chunks, { type }));
 }
 
 function showProgress(amount) {
@@ -187,22 +229,10 @@ function showProgress(amount) {
   loaderPct.textContent = pct;
 }
 
-function waitFor(element, eventName) {
-  return new Promise((resolve, reject) => {
-    element.addEventListener(eventName, resolve, { once: true });
-    element.addEventListener("error", reject, { once: true });
-  });
-}
-
-function primeVideo() {
-  video.play().then(() => video.pause()).catch(() => {});
-}
-
 function goStatic() {
   body.classList.add("is-static");
   body.classList.remove("is-ready");
   film.style.height = "";
-  videoReady = false;
   slabs.forEach((slab) => {
     slab.style.opacity = "";
     slab.style.transform = "";
@@ -239,6 +269,10 @@ function setupForm() {
     ];
     if (data.get("cards")) lines.push("Best cards: " + data.get("cards"));
     lines.push("I'll send photos here.");
-    window.open(whatsappLink(lines.join("\n")), "_blank", "noopener");
+    const link = document.createElement("a");
+    link.href = whatsappLink(lines.join("\n"));
+    link.target = "_blank";
+    link.rel = "noopener";
+    link.click();
   });
 }

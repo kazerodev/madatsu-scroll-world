@@ -11,6 +11,8 @@ Short notes on decisions, tests and changes. One entry per working session.
 | 2026-10-02 | Test S1 -> T1 -> S2 at 480p (Step 2). | Both seams match in composition: same card position, same light. Raw SSIM was low (0.55) only because of film grain. | Changed `seams.mjs` to blur + downscale before SSIM (now 0.83 / 0.92). Workflow approved, no prompt changes needed for T1. |
 | 2026-10-02 | Final S1-S4 at 1080p, then T1-T3 at 1080p with keyframes from the real 1080p frames. | All 6 seams SSIM 0.985-0.994. T2 reads as a gentle crane-up, T3 lets the card float up onto the stand (short morph, fits the "magic" of the moment). | Kept all clips, no re-rolls needed. Joined into one 34 s film. |
 | 2026-10-02 | Encoded 1920 / 1280 / 854 versions (MP4 + WebM). Playwright checks. | 16/16 checks pass. | Big screens get 1080p (18 MB), laptops 720p, phones 480p. Fixed the scroll hint overlapping the text panel on phones. |
+| 2026-10-02 | Reviewed the live preview: scrolling felt jerky. | Cause: seeking an H.264 video on every scroll step. The decoder can't keep up, so frames are skipped and it stutters. | Replaced the `<video>` with an image sequence on a `<canvas>` (the Apple method). 823 WebP frames packed into 4 files per size (every 8th frame first, then 4th, 2nd, rest) so the page starts fast and gets sharper while loading. Added a Playwright smoothness test (longest freeze 2 screen refreshes). |
+| 2026-10-02 | Tried official One Piece card images for the hero card. | All official images have a big "SAMPLE" watermark. | Need my own scans of real cards. |
 
 ## Images
 

@@ -1,12 +1,11 @@
 export const config = {
   whatsapp: "32485251110",
   email: "madatsutcg@gmail.com",
-  videoLarge: "media/world-1920",
-  videoDesktop: "media/world-1280",
-  videoMobile: "media/world-854",
+  framesDesktop: "media/frames/1280",
+  framesMobile: "media/frames/854",
   manifest: "media/manifest.json",
-  sceneScroll: 1.5,
-  transitionScroll: 1,
-  lastSceneScroll: 2,
-  smoothing: 0.14
+  sceneScroll: 1.6,
+  transitionScroll: 1.4,
+  lastSceneScroll: 2.2,
+  smoothing: 0.12
 };

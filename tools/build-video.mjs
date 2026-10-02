@@ -80,36 +80,7 @@ if (clips.length === 1) {
   run([...inputs, "-filter_complex", filter, "-map", last, "-c:v", "libx264", "-preset", "fast", "-crf", "14", "-pix_fmt", "yuv420p", joined]);
 }
 
-run([
-  "-i", joined, "-an", "-vf", "unsharp=5:5:0.4",
-  "-c:v", "libx264", "-preset", "slow", "-crf", "22", "-pix_fmt", "yuv420p",
-  "-g", "8", "-keyint_min", "8", "-sc_threshold", "0", "-movflags", "+faststart",
-  "media/world-1920.mp4"
-]);
-
-run([
-  "-i", joined, "-an", "-vf", "scale=1280:720,unsharp=5:5:0.6",
-  "-c:v", "libx264", "-preset", "slow", "-crf", "21", "-pix_fmt", "yuv420p",
-  "-g", "8", "-keyint_min", "8", "-sc_threshold", "0", "-movflags", "+faststart",
-  "media/world-1280.mp4"
-]);
-
-run([
-  "-i", joined, "-an", "-vf", "scale=854:480",
-  "-c:v", "libx264", "-preset", "slow", "-crf", "23", "-pix_fmt", "yuv420p",
-  "-g", "4", "-keyint_min", "4", "-sc_threshold", "0", "-movflags", "+faststart",
-  "media/world-854.mp4"
-]);
-
-for (const [size, gop, crf] of [["1920:1080", "8", "32"], ["1280:720", "8", "32"], ["854:480", "4", "35"]]) {
-  const width = size.split(":")[0];
-  run([
-    "-i", joined, "-an", "-vf", "scale=" + size,
-    "-c:v", "libvpx-vp9", "-crf", crf, "-b:v", "0", "-deadline", "good", "-cpu-used", "4", "-row-mt", "1",
-    "-g", gop, "-keyint_min", gop, "-pix_fmt", "yuv420p",
-    "media/world-" + width + ".webm"
-  ]);
-}
+execFileSync("node", ["tools/pack-frames.mjs"], { stdio: "inherit" });
 
 run(["-i", joined, "-frames:v", "1", "-vf", "scale=1920:-2", "-q:v", "3", "media/stills/poster.jpg"]);
 
@@ -123,5 +94,5 @@ for (const clip of manifest.clips) {
 
 writeFileSync("media/manifest.json", JSON.stringify(manifest, null, 2));
 
-console.log("Done: media/world-1920, world-1280, world-854 (.mp4 and .webm), media/manifest.json");
+console.log("Done: media/frames/1280, media/frames/854, media/manifest.json");
 console.log("Total length " + manifest.duration + " s");

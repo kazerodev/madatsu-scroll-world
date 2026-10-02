@@ -10,6 +10,9 @@
 
 ## Scroll / playback system
 
+**Update after testing:** the first version scrubbed a `<video>`. It stuttered, so the final version draws an image sequence on a `<canvas>` (see process log). The video is still used as the master to extract the frames.
+
+
 1. All 7 clips (4 scenes + 3 transitions) are joined into **one** video file: `media/world-1280.mp4`. The join has a very short crossfade (4 frames) at each seam to hide tiny differences.
 2. `tools/build-video.mjs` also writes `media/manifest.json` with the start and end time of every clip inside the joined video.
 3. The page has a tall scroll area. The video is `position: sticky` and fills the screen.

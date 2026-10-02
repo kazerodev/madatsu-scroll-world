@@ -13,6 +13,8 @@ const types = {
   ".json": "application/json",
   ".mp4": "video/mp4",
   ".webm": "video/webm",
+  ".bin": "application/octet-stream",
+  ".webp": "image/webp",
   ".jpg": "image/jpeg",
   ".png": "image/png"
 };
@@ -43,8 +45,7 @@ function check(ok, message) {
 }
 
 async function settle(page) {
-  await page.waitForTimeout(700);
-  await page.waitForFunction(() => !document.querySelector(".world").seeking);
+  await page.waitForTimeout(900);
 }
 
 async function scrollTo(page, progress) {
@@ -64,13 +65,12 @@ async function desktopTest() {
 
   await page.goto(base);
   await page.waitForSelector("body.is-ready", { timeout: 30000 });
-  check(true, "video loaded (desktop)");
-
-  const seekable = await page.evaluate(() => {
-    const v = document.querySelector(".world");
-    return v.seekable.length ? v.seekable.end(0) : 0;
-  });
-  check(seekable > 1, "video is seekable (" + seekable.toFixed(1) + " s)");
+  check(true, "first frames loaded (desktop)");
+  await page.waitForFunction(() => {
+    return performance.getEntriesByType("resource").filter((r) => r.name.includes("chunk-3")).length > 0;
+  }, null, { timeout: 60000 });
+  await page.waitForTimeout(1500);
+  check(true, "all frame chunks loaded");
 
   await page.screenshot({ path: outDir + "/desktop-start.png" });
 
@@ -78,36 +78,53 @@ async function desktopTest() {
   const forward = [];
   for (const p of steps) {
     await scrollTo(page, p);
-    forward.push(await page.evaluate(() => document.querySelector(".world").currentTime));
+    forward.push(await page.evaluate(() => Number(document.querySelector(".world").dataset.frame)));
   }
   const goesUp = forward.every((t, i) => i === 0 || t >= forward[i - 1]);
-  check(goesUp, "scrolling down moves time forward: " + forward.map((t) => t.toFixed(1)).join(", "));
+  check(goesUp, "scrolling down moves forward: " + forward.join(", "));
 
   const backward = [];
   for (const p of [...steps].reverse()) {
     await scrollTo(page, p);
-    backward.push(await page.evaluate(() => document.querySelector(".world").currentTime));
+    backward.push(await page.evaluate(() => Number(document.querySelector(".world").dataset.frame)));
   }
   const goesDown = backward.every((t, i) => i === 0 || t <= backward[i - 1]);
-  check(goesDown, "scrolling up moves time backward: " + backward.map((t) => t.toFixed(1)).join(", "));
+  check(goesDown, "scrolling up moves backward: " + backward.join(", "));
 
-  const sameAfterReturn = Math.abs(forward[5] - backward[5]) < 0.15;
+  const sameAfterReturn = Math.abs(forward[5] - backward[5]) <= 1;
   check(sameAfterReturn, "same scroll position shows the same frame both ways");
 
-  const manifest = await page.evaluate(() => fetch("media/manifest.json").then((r) => r.json()));
-  const seamTimes = manifest.clips.slice(1).map((c) => c.start);
-  for (let i = 0; i < seamTimes.length; i++) {
-    const t = seamTimes[i];
-    for (const [label, offset] of [["before", -0.12], ["after", 0.12]]) {
-      await page.evaluate((time) => {
-        const v = document.querySelector(".world");
-        v.currentTime = time;
-      }, t + offset);
-      await page.waitForTimeout(300);
-      await page.locator(".world").screenshot({ path: outDir + "/seam-" + (i + 1) + "-" + label + ".png" });
+  await scrollTo(page, 0);
+  const smooth = await page.evaluate(async () => {
+    const canvas = document.querySelector(".world");
+    const film = document.querySelector("#film");
+    const max = film.offsetHeight - window.innerHeight;
+    const seen = [];
+    const startY = window.scrollY;
+    const t0 = performance.now();
+    await new Promise((resolve) => {
+      function step(now) {
+        const t = (now - t0) / 8000;
+        window.scrollTo(0, startY + Math.min(t, 1) * max);
+        seen.push(Number(canvas.dataset.frame));
+        if (t < 1.3) requestAnimationFrame(step); else resolve();
+      }
+      requestAnimationFrame(step);
+    });
+    let biggest = 0;
+    let stall = 0;
+    let longestStall = 0;
+    const moving = seen.slice(0, Math.floor(seen.length / 1.3));
+    for (let i = 1; i < moving.length; i++) {
+      const jump = Math.abs(moving[i] - moving[i - 1]);
+      if (jump > biggest) biggest = jump;
+      stall = jump === 0 ? stall + 1 : 0;
+      if (stall > longestStall) longestStall = stall;
     }
-  }
-  check(true, "seam screenshots saved in " + outDir);
+    return { biggest, longestStall, ticks: moving.length, last: seen[seen.length - 1] };
+  });
+  check(smooth.longestStall <= 3 && smooth.biggest <= 6, "smooth playback: longest freeze " + smooth.longestStall + " refreshes, biggest jump " + smooth.biggest + " frames, reached frame " + smooth.last);
+
 
   for (let i = 0; i < 4; i++) {
     await page.click(".rail-steps li:nth-child(" + (i + 1) + ") button");
@@ -133,8 +150,8 @@ async function mobileTest() {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   await page.goto(base);
   await page.waitForSelector("body.is-ready", { timeout: 30000 });
-  const src = await page.evaluate(() => document.querySelector(".world").videoWidth);
-  check(src === 854, "phone gets the lighter video (" + src + " px wide)");
+  const light = await page.evaluate(() => performance.getEntriesByType("resource").some((r) => r.name.includes("frames/854")));
+  check(light, "phone gets the lighter frames (854)");
   await page.screenshot({ path: outDir + "/mobile-start.png" });
   await scrollTo(page, 0.45);
   await page.screenshot({ path: outDir + "/mobile-middle.png" });
