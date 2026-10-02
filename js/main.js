@@ -27,6 +27,7 @@ let lastTime = performance.now();
 
 setupContactLinks();
 setupForm();
+setupTilt();
 
 if (reduceMotion) {
   goStatic();
@@ -274,5 +275,25 @@ function setupForm() {
     link.target = "_blank";
     link.rel = "noopener";
     link.click();
+  });
+}
+
+function setupTilt() {
+  const card = document.querySelector("[data-tilt]");
+  if (!card || reduceMotion) return;
+  card.addEventListener("pointermove", (event) => {
+    const box = card.getBoundingClientRect();
+    const x = (event.clientX - box.left) / box.width;
+    const y = (event.clientY - box.top) / box.height;
+    card.style.setProperty("--ry", (x - 0.5) * 18 + "deg");
+    card.style.setProperty("--rx", (0.5 - y) * 18 + "deg");
+    card.style.setProperty("--gx", x * 100 + "%");
+    card.style.setProperty("--gy", y * 100 + "%");
+  });
+  card.addEventListener("pointerleave", () => {
+    card.style.setProperty("--rx", "0deg");
+    card.style.setProperty("--ry", "0deg");
+    card.style.setProperty("--gx", "50%");
+    card.style.setProperty("--gy", "30%");
   });
 }

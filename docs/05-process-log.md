@@ -13,6 +13,9 @@ Short notes on decisions, tests and changes. One entry per working session.
 | 2026-10-02 | Encoded 1920 / 1280 / 854 versions (MP4 + WebM). Playwright checks. | 16/16 checks pass. | Big screens get 1080p (18 MB), laptops 720p, phones 480p. Fixed the scroll hint overlapping the text panel on phones. |
 | 2026-10-02 | Reviewed the live preview: scrolling felt jerky. | Cause: seeking an H.264 video on every scroll step. The decoder can't keep up, so frames are skipped and it stutters. | Replaced the `<video>` with an image sequence on a `<canvas>` (the Apple method). 823 WebP frames packed into 4 files per size (every 8th frame first, then 4th, 2nd, rest) so the page starts fast and gets sharper while loading. Added a Playwright smoothness test (longest freeze 2 screen refreshes). |
 | 2026-10-02 | Tried official One Piece card images for the hero card. | All official images have a big "SAMPLE" watermark. | Need my own scans of real cards. |
+| 2026-10-02 | Got my own photo of a real card (Monkey.D.Luffy SP, OP05-119). Straightened it with a perspective warp (OpenCV) into a clean scan. | Clean 1260x1760 card image with rounded corners. | Used in the film and in a new "The card in the film" section with a 3D tilt effect. |
+| 2026-10-02 | Tried to regenerate the scenes with the real card in Seedance (stills edited with Nano Banana Pro). | Scene 1 and 2 passed. Scenes 3 and 4 were blocked by Seedance moderation twice (the character is copyrighted, so the provider refuses close-ups of it). | Did not try to trick the filter. Instead: kept the approved clips and composited the real card photo onto the hero card myself (VFX). |
+| 2026-10-02 | Wrote `tools/track-card.py` (optical-flow tracking + homography, per frame), `tools/refine-quads.py` (snaps the card outline to the real edges) and `tools/composite-card.py` (warps the photo onto the card, keeps the scene's shading and reflections). The morph in T3 is tracked forward and backward and blended. | Real card visible and sharp in all 7 clips, text readable, seams still identical. | Rebuilt the frame sequence. 16/16 tests still pass. |
 
 ## Images
 
@@ -22,3 +25,4 @@ Short notes on decisions, tests and changes. One entry per working session.
 - Test transition at 480p: `img/test-t1-480p.jpg`
 - Final transitions: `img/transitions-1080p.jpg`
 - Seam checks: `img/seam-t1-s2.jpg`, `img/seam-t3-s4.jpg`
+- Real card composite: `img/composite-real-card.jpg`, tracking check: `img/tracking-s2.jpg`
