@@ -94,6 +94,16 @@ run([
   "media/world-854.mp4"
 ]);
 
+for (const [size, gop, crf] of [["1280:720", "8", "31"], ["854:480", "4", "35"]]) {
+  const width = size.split(":")[0];
+  run([
+    "-i", joined, "-an", "-vf", "scale=" + size,
+    "-c:v", "libvpx-vp9", "-crf", crf, "-b:v", "0", "-deadline", "good", "-cpu-used", "4", "-row-mt", "1",
+    "-g", gop, "-keyint_min", gop, "-pix_fmt", "yuv420p",
+    "media/world-" + width + ".webm"
+  ]);
+}
+
 run(["-i", joined, "-frames:v", "1", "-q:v", "3", "media/stills/poster.jpg"]);
 
 let sceneNumber = 1;
@@ -106,5 +116,5 @@ for (const clip of manifest.clips) {
 
 writeFileSync("media/manifest.json", JSON.stringify(manifest, null, 2));
 
-console.log("Done: media/world-1280.mp4, media/world-854.mp4, media/manifest.json");
+console.log("Done: media/world-1280 + world-854 (.mp4 and .webm), media/manifest.json");
 console.log("Total length " + manifest.duration + " s");

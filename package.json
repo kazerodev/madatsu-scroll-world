@@ -1,0 +1,16 @@
+{
+  "name": "madatsu-drawer-to-display",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "placeholders": "node tools/placeholders.mjs",
+    "frames": "node tools/frames.mjs",
+    "seams": "node tools/seams.mjs",
+    "build:video": "node tools/build-video.mjs",
+    "test": "node tests/check.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.56.0"
+  }
+}

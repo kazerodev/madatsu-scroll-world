@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Drawer to Display - Sell your cards to MADATSU TCG</title>
+  <meta name="description" content="Got a box of trading cards you never play? MADATSU TCG in Mechelen checks every card by hand and makes you a clear offer.">
+  <meta name="theme-color" content="#0A1020">
+  <meta property="og:title" content="Drawer to Display - MADATSU TCG">
+  <meta property="og:description" content="Sell your trading cards to MADATSU. Checked by hand, clear offer, back into play.">
+  <meta property="og:image" content="media/stills/scene-4.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="preload" href="media/manifest.json" as="fetch" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="wordmark" href="#top" aria-label="MADATSU TCG home">
+      <span class="wordmark-main">MADATSU</span>
+      <span class="wordmark-sub">TCG</span>
+    </a>
+    <a class="topbar-cta" data-whatsapp href="#offer">Get an offer</a>
+  </header>
+
+  <main id="top">
+    <section class="film" id="film" aria-label="Drawer to Display, a scroll story">
+      <div class="stage">
+        <img class="poster" src="media/stills/poster.jpg" alt="">
+        <video class="world" muted playsinline preload="none" aria-hidden="true"></video>
+        <div class="shade"></div>
+
+        <div class="loader" aria-live="polite">
+          <div class="loader-card"><div class="loader-fill"></div></div>
+          <p class="loader-text">Loading <span class="loader-pct">0</span>%</p>
+        </div>
+
+        <nav class="rail" aria-label="Story progress">
+          <p class="rail-count"><span class="rail-now">001</span>/004</p>
+          <ol class="rail-steps">
+            <li><button type="button" data-goto="0">The drawer</button></li>
+            <li><button type="button" data-goto="1">The check</button></li>
+            <li><button type="button" data-goto="2">The offer</button></li>
+            <li><button type="button" data-goto="3">The display</button></li>
+          </ol>
+          <div class="rail-line"><div class="rail-fill"></div></div>
+        </nav>
+
+        <div class="scenes">
+          <article class="scene" data-scene="0">
+            <img class="scene-still" src="media/stills/scene-1.jpg" alt="An open drawer with a shoebox full of loose trading cards, one holo card on top." loading="lazy">
+            <div class="slab">
+              <p class="slab-strip"><span>MADATSU</span><span>01/04</span><span>The drawer</span></p>
+              <h1 class="slab-title">Cards you never play?</h1>
+              <p class="slab-body">Most collections end up in a box. Yours could be worth more than you think.</p>
+            </div>
+          </article>
+
+          <article class="scene" data-scene="1">
+            <img class="scene-still" src="media/stills/scene-2.jpg" alt="A trading card in a toploader on a navy playmat next to a loupe." loading="lazy">
+            <div class="slab">
+              <p class="slab-strip"><span>MADATSU</span><span>02/04</span><span>The check</span></p>
+              <h2 class="slab-title">We check every card by hand.</h2>
+              <p class="slab-body">Condition, edition and language, one by one. Prices based on the Cardmarket trend.</p>
+              <ul class="slab-tags"><li>One Piece</li><li>Pokémon</li><li>Riftbound</li></ul>
+            </div>
+          </article>
+
+          <article class="scene" data-scene="2">
+            <img class="scene-still" src="media/stills/scene-3.jpg" alt="The card on a shop counter, shelves of booster boxes behind it." loading="lazy">
+            <div class="slab">
+              <p class="slab-strip"><span>MADATSU</span><span>03/04</span><span>The offer</span></p>
+              <h2 class="slab-title">A clear offer. You decide.</h2>
+              <p class="slab-body">Up to 75% of the Cardmarket trend for English cards in demand. No pressure, no obligation.</p>
+            </div>
+          </article>
+
+          <article class="scene" data-scene="3">
+            <img class="scene-still" src="media/stills/scene-4.jpg" alt="The card on an acrylic stand inside a lit glass display case." loading="lazy">
+            <div class="slab slab-final">
+              <p class="slab-strip"><span>MADATSU</span><span>04/04</span><span>The display</span></p>
+              <h2 class="slab-title">Ready for its next collector.</h2>
+              <p class="slab-body">Send us a few photos and get an offer for your cards.</p>
+              <div class="slab-actions">
+                <a class="btn btn-main" data-whatsapp href="#offer">Get an offer on WhatsApp</a>
+                <a class="btn btn-ghost" href="#how">How it works</a>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="hint" aria-hidden="true">
+          <span class="hint-line"></span>
+          <span class="hint-text">Scroll to follow the card</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="info" id="how">
+      <div class="info-inner">
+        <p class="eyebrow">How it works</p>
+        <h2 class="info-title">From your drawer to our display in three steps.</h2>
+        <ol class="steps">
+          <li>
+            <span class="step-num">01</span>
+            <h3>Send photos</h3>
+            <p>Front and back of the cards you want to sell, or a photo of the whole stack. WhatsApp is the fastest.</p>
+          </li>
+          <li>
+            <span class="step-num">02</span>
+            <h3>Get an offer</h3>
+            <p>We check condition, edition and language and send you a price per card or for the whole lot.</p>
+          </li>
+          <li>
+            <span class="step-num">03</span>
+            <h3>Hand over and get paid</h3>
+            <p>Drop them off in Mechelen or ship them to us. We pay after a final check of the cards.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="info info-rates" id="rates">
+      <div class="info-inner">
+        <p class="eyebrow">What we pay</p>
+        <h2 class="info-title">Simple rates, based on Cardmarket.</h2>
+        <div class="rates">
+          <div class="rate">
+            <p class="rate-pct">75%</p>
+            <p class="rate-label">English cards with demand</p>
+          </div>
+          <div class="rate">
+            <p class="rate-pct">65%</p>
+            <p class="rate-label">English cards with low demand</p>
+          </div>
+          <div class="rate">
+            <p class="rate-pct">Ask</p>
+            <p class="rate-label">Japanese and other languages, case by case</p>
+          </div>
+        </div>
+        <p class="note">Percentages of the Cardmarket trend price. The final offer depends on condition, and we only buy authentic cards.</p>
+      </div>
+    </section>
+
+    <section class="info info-form" id="offer">
+      <div class="info-inner info-split">
+        <div>
+          <p class="eyebrow">Get an offer</p>
+          <h2 class="info-title">Tell us what you have.</h2>
+          <p class="info-text">Fill this in and we open WhatsApp with your message ready. Add your photos there.</p>
+          <p class="info-text small">Prefer email? <a data-email href="#">Write to us</a>.</p>
+        </div>
+        <form class="offer-form" id="offer-form">
+          <label>Your name
+            <input name="name" type="text" autocomplete="name" required>
+          </label>
+          <div class="form-row">
+            <label>Game
+              <select name="game">
+                <option>One Piece</option>
+                <option>Pokémon</option>
+                <option>Riftbound</option>
+                <option>Other</option>
+              </select>
+            </label>
+            <label>Language
+              <select name="language">
+                <option>English</option>
+                <option>Japanese</option>
+                <option>Other</option>
+              </select>
+            </label>
+          </div>
+          <label>Roughly how many cards?
+            <select name="amount">
+              <option>1-10</option>
+              <option>10-50</option>
+              <option>50-200</option>
+              <option>200+</option>
+            </select>
+          </label>
+          <label>Best cards (optional)
+            <textarea name="cards" rows="3" placeholder="e.g. a few alt arts, a full binder of commons"></textarea>
+          </label>
+          <button class="btn btn-main" type="submit">Open WhatsApp</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p class="wordmark wordmark-small"><span class="wordmark-main">MADATSU</span><span class="wordmark-sub">TCG</span></p>
+    <p>Mechelen, Belgium</p>
+    <p><a href="https://madatsutcg.com">madatsutcg.com</a> · <a href="https://instagram.com/madatsutcg">@madatsutcg</a></p>
+    <p class="footer-note">A scroll story made for Thomas More, A2 Scroll World.</p>
+  </footer>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
