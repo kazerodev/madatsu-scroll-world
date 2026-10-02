@@ -1,0 +1,6 @@
+node_modules/
+production/raw/
+production/frames/
+production/tmp/
+test-results/
+.DS_Store
