@@ -16,6 +16,7 @@ Short notes on decisions, tests and changes. One entry per working session.
 | 2026-10-02 | Got my own photo of a real card (Monkey.D.Luffy SP, OP05-119). Straightened it with a perspective warp (OpenCV) into a clean scan. | Clean 1260x1760 card image with rounded corners. | Used in the film and in a new "The card in the film" section with a 3D tilt effect. |
 | 2026-10-02 | Tried to regenerate the scenes with the real card in Seedance (stills edited with Nano Banana Pro). | Scene 1 and 2 passed. Scenes 3 and 4 were blocked by Seedance moderation twice (the character is copyrighted, so the provider refuses close-ups of it). | Did not try to trick the filter. Instead: kept the approved clips and composited the real card photo onto the hero card myself (VFX). |
 | 2026-10-02 | Wrote `tools/track-card.py` (optical-flow tracking + homography, per frame), `tools/refine-quads.py` (snaps the card outline to the real edges) and `tools/composite-card.py` (warps the photo onto the card, keeps the scene's shading and reflections). The morph in T3 is tracked forward and backward and blended. | Real card visible and sharp in all 7 clips, text readable, seams still identical. | Rebuilt the frame sequence. 16/16 tests still pass. |
+| 2026-10-03 | Review: the card photo slid a little on top of the card in some moments (T1, T2, the float-up in T3). | Cause: feature tracking (corner points) loses grip on the blurry foil and drifts. Per-frame edge snapping made it worse because the toploader edges confuse it. | New method: I marked the card corners by hand on keyframes (start, end, and extra keys in T2, S3, T3), then tracked between them with dense optical flow (`tools/track-dense.py`, every pixel of the card, not just corners), forward and backward, blended. Wrapped it in `tools/card-pipeline.py`. Removed the old tracking scripts. Photo now stays locked to the card. 16/16 tests pass. |
 
 ## Images
 
@@ -25,4 +26,5 @@ Short notes on decisions, tests and changes. One entry per working session.
 - Test transition at 480p: `img/test-t1-480p.jpg`
 - Final transitions: `img/transitions-1080p.jpg`
 - Seam checks: `img/seam-t1-s2.jpg`, `img/seam-t3-s4.jpg`
+- Card lock check after the fix: `img/card-lock-check.jpg`
 - Real card composite: `img/composite-real-card.jpg`, tracking check: `img/tracking-s2.jpg`
