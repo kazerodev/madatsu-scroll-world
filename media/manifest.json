@@ -1,0 +1,48 @@
+{
+  "fps": 24,
+  "clips": [
+    {
+      "name": "s1",
+      "type": "scene",
+      "start": 0,
+      "end": 4.917
+    },
+    {
+      "name": "t1",
+      "type": "transition",
+      "start": 4.917,
+      "end": 10.75
+    },
+    {
+      "name": "s2",
+      "type": "scene",
+      "start": 10.75,
+      "end": 15.583
+    },
+    {
+      "name": "t2",
+      "type": "transition",
+      "start": 15.583,
+      "end": 21.417
+    },
+    {
+      "name": "s3",
+      "type": "scene",
+      "start": 21.417,
+      "end": 26.25
+    },
+    {
+      "name": "t3",
+      "type": "transition",
+      "start": 26.25,
+      "end": 32.083
+    },
+    {
+      "name": "s4",
+      "type": "scene",
+      "start": 32.083,
+      "end": 37
+    }
+  ],
+  "duration": 37
+}
