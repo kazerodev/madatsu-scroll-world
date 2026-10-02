@@ -1,10 +1,5 @@
 node_modules/
-production/raw/
-production/frames/
-production/tmp/
+production/
 test-results/
 .DS_Store
-production/stills/
-production/final/
-production/test/
 media/world-*
