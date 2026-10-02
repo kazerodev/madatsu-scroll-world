@@ -46,6 +46,7 @@ You need Node.js and ffmpeg.
 
 ```
 npm install
+npx playwright install chromium
 npx serve .
 ```
 
