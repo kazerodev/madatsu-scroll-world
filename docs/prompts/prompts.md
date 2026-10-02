@@ -123,23 +123,36 @@ of the shoebox and slides into a clear rigid toploader. The wooden drawer and ca
 away into dark navy felt and a warm lamp pool of light. One continuous camera move, no cut.
 ```
 
-### T2 - Desk to counter
+### T2 - Desk to counter (final version used)
 
 ```
-[MOTION RULES]
-Continuing the same forward drift, the camera tracks low and level along the navy felt
-following the card in its toploader. The space opens up as the felt becomes a shop counter
-and shelves of card boxes appear softly out of focus with warm bokeh lights.
+Single continuous camera move, no cuts, no dissolve. Photorealistic, same lens, warm amber
+light and deep navy color grade throughout. Continuing the same slow forward drift from the
+start frame, the camera rises gently and keeps gliding forward over the navy felt with the
+holographic card in its toploader. The desk lamp and loupe slide out of frame as the space
+opens up: the felt becomes a mat on a dark wooden shop counter, and wooden shelves with plain
+dark boxes and two warm pendant lamps appear softly out of focus behind it, arriving exactly
+at the end frame. Smooth crane-up and forward glide, never reversing. No people, no hands,
+no text. Calm, slow motion.
 ```
 
-### T3 - Counter to display
+### T3 - Counter to display (final version used)
 
 ```
-[MOTION RULES]
-Continuing the same forward drift, the camera moves past the counter toward a lit glass
-display case. The card in its toploader now stands on a small acrylic stand inside the case,
-thin warm LED light along the top. One continuous camera move, no cut.
+Single continuous camera move, no cuts, no dissolve. Photorealistic, same lens, warm amber
+light and deep navy color grade throughout. Continuing the same slow forward drift from the
+start frame, the camera follows the holographic card in its toploader as it rises from the
+counter mat and stands upright on a small clear acrylic stand. The camera keeps gliding
+forward and slightly down to eye level as the counter gives way to a glass display case with
+a thin warm LED strip along the top, other holographic cards on stands softly out of focus
+beside it, arriving exactly at the end frame. Constant forward movement, never pulling back.
+No people, no hands, no text. Calm, slow motion.
 ```
+
+## What changed in the still prompts after round 1
+
+- Still 3 and 4 showed real Pokémon booster boxes and cards in the background. Added: "plain dark navy and black storage boxes, completely unbranded", "no brand artwork, no recognizable characters, no printed packaging", and for still 4 "other cards show only abstract holographic foil patterns".
+- Model: Nano Banana 2, 2K, 16:9. Still 1 is the style reference for stills 2-4.
 
 ## If moderation blocks a clip
 

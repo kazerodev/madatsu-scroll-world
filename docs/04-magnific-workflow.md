@@ -19,21 +19,25 @@
 | Poll with `--wait` | `creations_wait` (long-poll), then `creations_register_download` and download the asset URL |
 | Clips switched in the page with DOM crossfades | All clips joined with ffmpeg into one timeline (`tools/build-video.mjs`) |
 
-Known limits (observed by other users in 2026-09, check live with `video_models_show`):
+Checked live on 2026-10-02 with `video_models_list` and `simulate_cost` (school Business account):
+
+- Seedance 2.5 (`bytedance-seedance-pro-2.5`): 4-30 s, 480p / 720p / 1080p, start + end keyframes supported.
+- Image model used: Nano Banana 2 (`imagen-nano-banana-2-flash`), 2K, 16:9. GPT 2.5 is listed as best for text/layout, not photoreal, so I chose Nano Banana 2.
+- Exact costs: image 2K = 75 credits. Seedance 2.5, 5 s: 480p = 1,000 / 720p = 2,200 / 1080p = 3,950 credits.
+
+Known limits:
 
 - Keyframes (start/end) and references can NOT be combined in one Seedance job. For transitions I use keyframes only.
 - Seedance lands close to the end frame but not pixel-perfect. The 4-frame crossfade in the join covers the small difference.
 
 ## Cost (estimate, verify with `simulate_cost`)
 
-Observed rates: Seedance 2.5 about 200 credits/s at 480p and about 440 credits/s at 720p.
-
-| Batch | Content | Estimate |
+| Batch | Content | Credits |
 |---|---|---|
-| Stills | 4 images (+2 re-rolls) | small |
-| Test (Step 2 of the brief) | S1 + T1 + S2 at 480p, 3 x 5 s | ~3,000 credits |
-| Final | 4 scenes + 3 transitions at 720p, 7 x 5 s | ~15,400 credits |
-| Buffer | ~2 re-rolls at 720p | ~4,400 credits |
+| Stills | 14 images (4 kept, 2 rounds of re-rolls) | 1,050 |
+| Test (Step 2 of the brief) | S1 + T1 + S2 at 480p, 3 x 5 s | 3,000 |
+| Final | 4 scenes + 3 transitions at 1080p, 7 x 5 s | 27,650 |
+| Total | | ~31,700 |
 
 Credits are shared with the class: no batch runs without checking the estimate first.
 

@@ -45,7 +45,10 @@ async function start() {
     });
     requestAnimationFrame(loop);
 
-    const url = await loadVideo(pickVideo(isMobile ? config.videoMobile : config.videoDesktop));
+    let name = config.videoDesktop;
+    if (isMobile) name = config.videoMobile;
+    else if (window.innerWidth * window.devicePixelRatio > 1600) name = config.videoLarge;
+    const url = await loadVideo(pickVideo(name));
     video.src = url;
     await waitFor(video, "loadeddata");
     video.currentTime = targetTime;

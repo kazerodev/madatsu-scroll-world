@@ -4,3 +4,6 @@ production/frames/
 production/tmp/
 test-results/
 .DS_Store
+production/stills/
+production/final/
+production/test/

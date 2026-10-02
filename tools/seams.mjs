@@ -23,7 +23,7 @@ function grab(file, where, out) {
 function ssim(a, b) {
   const result = spawnSync("ffmpeg", [
     "-v", "info", "-i", a, "-i", b,
-    "-lavfi", "[1:v][0:v]scale2ref[b][a];[a][b]ssim",
+    "-lavfi", "[0:v]scale=320:-2,gblur=sigma=2[a];[1:v]scale=320:-2,gblur=sigma=2[b];[a][b]ssim",
     "-f", "null", "-"
   ], { encoding: "utf8" });
   const match = result.stderr.match(/All:([0-9.]+)/);

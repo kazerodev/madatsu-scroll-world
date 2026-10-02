@@ -5,44 +5,44 @@
       "name": "s1",
       "type": "scene",
       "start": 0,
-      "end": 4.917
+      "end": 4.958
     },
     {
       "name": "t1",
       "type": "transition",
-      "start": 4.917,
-      "end": 10.75
+      "start": 4.958,
+      "end": 9.833
     },
     {
       "name": "s2",
       "type": "scene",
-      "start": 10.75,
-      "end": 15.583
+      "start": 9.833,
+      "end": 14.708
     },
     {
       "name": "t2",
       "type": "transition",
-      "start": 15.583,
-      "end": 21.417
+      "start": 14.708,
+      "end": 19.583
     },
     {
       "name": "s3",
       "type": "scene",
-      "start": 21.417,
-      "end": 26.25
+      "start": 19.583,
+      "end": 24.458
     },
     {
       "name": "t3",
       "type": "transition",
-      "start": 26.25,
-      "end": 32.083
+      "start": 24.458,
+      "end": 29.333
     },
     {
       "name": "s4",
       "type": "scene",
-      "start": 32.083,
-      "end": 37
+      "start": 29.333,
+      "end": 34.292
     }
   ],
-  "duration": 37
+  "duration": 34.292
 }

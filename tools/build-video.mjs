@@ -33,7 +33,7 @@ for (const name of names) {
   const output = path.join(tmpDir, name + ".mp4");
   run([
     "-i", input, "-an",
-    "-vf", "scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,fps=" + fps + ",format=yuv420p,settb=AVTB",
+    "-vf", "scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080,fps=" + fps + ",format=yuv420p,settb=AVTB",
     "-c:v", "libx264", "-preset", "fast", "-crf", "14", output
   ]);
   clips.push({ name, file: output, length: duration(output) });
@@ -81,8 +81,15 @@ if (clips.length === 1) {
 }
 
 run([
-  "-i", joined, "-an", "-vf", "unsharp=5:5:0.6",
-  "-c:v", "libx264", "-preset", "slow", "-crf", "20", "-pix_fmt", "yuv420p",
+  "-i", joined, "-an", "-vf", "unsharp=5:5:0.4",
+  "-c:v", "libx264", "-preset", "slow", "-crf", "22", "-pix_fmt", "yuv420p",
+  "-g", "8", "-keyint_min", "8", "-sc_threshold", "0", "-movflags", "+faststart",
+  "media/world-1920.mp4"
+]);
+
+run([
+  "-i", joined, "-an", "-vf", "scale=1280:720,unsharp=5:5:0.6",
+  "-c:v", "libx264", "-preset", "slow", "-crf", "21", "-pix_fmt", "yuv420p",
   "-g", "8", "-keyint_min", "8", "-sc_threshold", "0", "-movflags", "+faststart",
   "media/world-1280.mp4"
 ]);
@@ -94,7 +101,7 @@ run([
   "media/world-854.mp4"
 ]);
 
-for (const [size, gop, crf] of [["1280:720", "8", "31"], ["854:480", "4", "35"]]) {
+for (const [size, gop, crf] of [["1920:1080", "8", "32"], ["1280:720", "8", "32"], ["854:480", "4", "35"]]) {
   const width = size.split(":")[0];
   run([
     "-i", joined, "-an", "-vf", "scale=" + size,
@@ -104,7 +111,7 @@ for (const [size, gop, crf] of [["1280:720", "8", "31"], ["854:480", "4", "35"]]
   ]);
 }
 
-run(["-i", joined, "-frames:v", "1", "-q:v", "3", "media/stills/poster.jpg"]);
+run(["-i", joined, "-frames:v", "1", "-vf", "scale=1920:-2", "-q:v", "3", "media/stills/poster.jpg"]);
 
 let sceneNumber = 1;
 for (const clip of manifest.clips) {
@@ -116,5 +123,5 @@ for (const clip of manifest.clips) {
 
 writeFileSync("media/manifest.json", JSON.stringify(manifest, null, 2));
 
-console.log("Done: media/world-1280 + world-854 (.mp4 and .webm), media/manifest.json");
+console.log("Done: media/world-1920, world-1280, world-854 (.mp4 and .webm), media/manifest.json");
 console.log("Total length " + manifest.duration + " s");

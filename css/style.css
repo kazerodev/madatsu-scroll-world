@@ -350,6 +350,7 @@ img { display: block; max-width: 100%; }
 }
 
 .hint-text {
+  white-space: nowrap;
   font-family: var(--mono);
   font-size: 11px;
   letter-spacing: 0.16em;
@@ -548,8 +549,10 @@ img { display: block; max-width: 100%; }
   .rail { top: auto; bottom: auto; top: max(76px, env(safe-area-inset-top)); right: 16px; transform: none; display: block; }
   .rail-steps, .rail-line { display: none; }
   .rail-count { margin: 0; }
-  .scene { padding: 0 16px max(84px, calc(env(safe-area-inset-bottom) + 72px)); }
+  .scene { padding: 0 16px max(64px, calc(env(safe-area-inset-bottom) + 52px)); }
   .slab { padding: 14px 16px 18px; }
+  .hint { bottom: max(18px, env(safe-area-inset-bottom)); }
+  .hint-line { display: none; }
   .slab-body { font-size: 15px; }
   .shade {
     background: linear-gradient(0deg, rgba(10, 16, 32, 0.85) 0%, rgba(10, 16, 32, 0.2) 50%, rgba(10, 16, 32, 0) 70%);
